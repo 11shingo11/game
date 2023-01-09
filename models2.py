@@ -56,6 +56,7 @@ class Player:
         self.loot_deck = loot_deck
         self.monster_deck = monster_deck
         self.hand = []
+        self.inv = []
         self.level = 1
         self.name = name
 
@@ -76,3 +77,6 @@ class Player:
     def use_card(self, index):
         card = self.hand[index]
         card.use(self)
+        self.inv.append(card)
+        self.hand.remove(card)
+        return self.inv, self.hand
