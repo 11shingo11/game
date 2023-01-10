@@ -1,5 +1,7 @@
 import random
 from typing import List
+import pygame
+
 
 
 class Card:
@@ -8,7 +10,7 @@ class Card:
         self.name = name
 
     def __str__(self):
-        return f"{self.name}\nLevel: {self.level}"
+        return f"{self.name}  Level: {self.level}"
 
 
 class Deck:
@@ -53,6 +55,7 @@ class MonsterCard(Card):
 
 class Player:
     def __init__(self, name, monster_deck, loot_deck):
+        self.text = None
         self.loot_deck = loot_deck
         self.monster_deck = monster_deck
         self.hand = []
@@ -64,15 +67,15 @@ class Player:
         self.hand = self.loot_deck.draw(2)
 
     def fight(self, monster):
-        if self.level >= monster.level:
-            print(f"{self.name} has won the fight against {monster.name}!")
+        if self.level >= monster.level:                                                 
+            self.text = f"{self.name} has won the fight against {monster.name}!"
             self.hand.append(self.loot_deck.draw())
         else:
-            print(f"{self.name} has lost the fight against {monster.name}.")
+            self.text = f"{self.name} has lost the fight against {monster.name}."
 
     def battle(self):
         monster = self.monster_deck.draw()
-        self.fight(monster)
+        return monster.name, monster.level, monster
 
     def use_card(self, index):
         card = self.hand[index]

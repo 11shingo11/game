@@ -1,7 +1,5 @@
 import sys
-from models2 import *
-import random
-from testmodels import *
+from models2 import MonsterCard, LootCard, Deck, Player
 import pygame
 
 pygame.init()
@@ -27,14 +25,15 @@ def player_field():
     screen.blit(player_name, (20, 20))
     screen.blit(player_level, (20, 50))
 
-def hand_field():
-    hand_rect = pygame.Rect(10, 120, 300, 100)
-    pygame.draw.rect(screen, white, hand_rect)
 
+def hand_field():
+    hand_rect = pygame.Rect(10, 125, 300, 100)
+    pygame.draw.rect(screen, white, hand_rect)
     card_spacing = 30
     for i, card in enumerate(player.hand):
         card_text = pygame.font.Font(None, 25).render(str(card), True, black)
         screen.blit(card_text, (20, 130 + i * card_spacing))
+
 
 def using_card():
     used_cards_rect = pygame.Rect(10, 240, 300, 100)
@@ -44,33 +43,45 @@ def using_card():
         for i, card in enumerate(player.inv):
             card_text = pygame.font.Font(None, 25).render(str(card), True, black)
             screen.blit(card_text, (20, 260 + i * card_spacing))
+
+
 def battle_field():
-    battle_rect = pygame.Rect(320, 10, 300, 300)
+    battle_rect = pygame.Rect(320, 10, 300, 330)
     pygame.draw.rect(screen, white, battle_rect)
+    monster_name_text = pygame.font.Font(None, 30).render(monster_name, True, black)
+    monster_level_text = pygame.font.Font(None, 25).render("Level: " + str(monster_level), True, black)
+    screen.blit(monster_name_text, (430, 20))
+    screen.blit(monster_level_text, (430, 60))
 
 
+def result():
+    battle_rect = pygame.Rect(10, 350, 610, 100)
+    pygame.draw.rect(screen, white, battle_rect)
+    result_text = pygame.font.Font(None, 30).render(player.text, True, black)
+    screen.blit(result_text, (40, 400))
 
 
 screen = pygame.display.set_mode((800, 640))
 while True:
-
     player_field()
     hand_field()
     using_card()
-    battle_field()
-
-
 
     pygame.display.update()
 
     for event in pygame.event.get():
+
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-        elif event.type == pygame.KEYDOWN:
+        if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 player.use_card(0)
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
-                player.battle()
-
+                monster_name, monster_level, monster_obj = player.battle()
+                battle_field()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_DOWN:
+                player.fight(monster_obj)
+                result()
