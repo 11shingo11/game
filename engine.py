@@ -25,9 +25,10 @@ def player_field():
     screen.blit(player_name, (20, 20))
     screen.blit(player_level, (20, 50))
 
+hand_rect = pygame.Rect(10, 125, 300, 100)
+
 
 def hand_field():
-    hand_rect = pygame.Rect(10, 125, 300, 100)
     pygame.draw.rect(screen, white, hand_rect)
     card_spacing = 30
     for i, card in enumerate(player.hand):
@@ -74,9 +75,19 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_SPACE:
-                player.use_card(0)
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if hand_rect.collidepoint(event.pos):
+                card_rects = []
+                card_spacing = 30
+                index = 0
+                for i, card in enumerate(player.hand):
+                    card_rect = pygame.Rect(20, 130 + i * card_spacing, 200, 30)
+                    card_rects.append(card_rect)
+                    if card_rect.collidepoint(event.pos):
+                        selected_card = card
+                        player.use_card(index)
+                    index += 1
+                    pass
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
                 monster_name, monster_level, monster_obj = player.battle()
