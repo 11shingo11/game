@@ -45,14 +45,16 @@ def using_card():
             card_text = pygame.font.Font(None, 25).render(str(card), True, black)
             screen.blit(card_text, (20, 260 + i * card_spacing))
 
+battle_rect = pygame.Rect(320, 10, 300, 330)
+
 
 def battle_field():
-    battle_rect = pygame.Rect(320, 10, 300, 330)
     pygame.draw.rect(screen, white, battle_rect)
     monster_name_text = pygame.font.Font(None, 30).render(monster_name, True, black)
     monster_level_text = pygame.font.Font(None, 25).render("Level: " + str(monster_level), True, black)
     screen.blit(monster_name_text, (430, 20))
     screen.blit(monster_level_text, (430, 60))
+
 
 
 def result():
@@ -87,7 +89,11 @@ while True:
                         selected_card = card
                         player.use_card(index)
                     index += 1
-                    pass
+            if battle_rect.collidepoint(event.pos):
+                monster_name, monster_level, monster_obj = player.battle()
+                battle_field()
+
+            pass
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
                 monster_name, monster_level, monster_obj = player.battle()
