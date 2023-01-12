@@ -1,4 +1,4 @@
-from models import *
+
 #карты лута
 l1 = LootCard('Щит', 1)
 l2 = LootCard('Меч', 2)
