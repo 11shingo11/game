@@ -26,6 +26,16 @@ player.start()
 screen = pygame.display.set_mode((800, 640))
 
 
+def create_mdeck():
+    monster_cards = [MonsterCard("Goblin", 1), MonsterCard("Troll", 3),
+                     MonsterCard("Dragon", 5), MonsterCard("Orc", 2),
+                     MonsterCard("Undead", 1)]
+    monster_deck = Deck("Monsters", monster_cards)
+    monster_deck.shuffle()
+    player.monster_deck = monster_deck
+
+
+
 def render_text(text, x, y, font_size):
     font = pygame.font.Font(None, font_size)
     text = font.render(text, True, BLACK)
@@ -76,18 +86,31 @@ while True:
                 card_rects = []
                 card_spacing = 30
                 index = 0
-                for i, card in enumerate(player.hand):
-                    card_rect = pygame.Rect(20, 130 + i * card_spacing, 200, 30)
-                    card_rects.append(card_rect)
-                    if card_rect.collidepoint(event.pos):
-                        player.use_card(index)
-                    index += 1
+                if len(player.hand) != 0:
+                    for i, card in enumerate(player.hand):
+                        card_rect = pygame.Rect(20, 130 + i * card_spacing, 200, 30)
+                        card_rects.append(card_rect)
+                        if card_rect.collidepoint(event.pos):
+                            player.use_card(index)
+                        index += 1
+                else:
+                    pygame.draw.rect(screen, WHITE, result_rect)
+                    render_text('Сообщение:', 20, 360, 25)
+                    render_text("Нет карт в руке", 20, 390, 25)
+
             if battle_rect.collidepoint(event.pos):
-                monster_name, monster_level, monster_obj = player.battle()
-                battle_field()
-                render_text("Имя монстра: " + monster_name, 320, 40, 25)
-                render_text("Уровень монстра: " + str(monster_level), 320, 60, 25)
-                pass
+                if len(player.monster_deck.cards) != 0:
+                    monster_name, monster_level, monster_obj = player.battle()
+                    battle_field()
+                    render_text("Имя монстра: " + monster_name, 320, 40, 25)
+                    render_text("Уровень монстра: " + str(monster_level), 320, 60, 25)
+                    pass
+                else:
+                    create_mdeck()
+                    battle_field()
+                    pygame.draw.rect(screen, WHITE, result_rect)
+                    render_text('Упс!', 20, 360, 25)
+                    render_text('Больше нет монстров.Замешаем новую колоду!', 20, 390, 25)
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_DOWN:
                 pygame.draw.rect(screen, WHITE, result_rect)

@@ -68,18 +68,24 @@ class Player:
 
     def fight(self, monster):
         if self.level >= monster.level:                                                 
-            self.text = f"{self.name} has won the fight against {monster.name}!"
-            self.hand.append(self.loot_deck.draw())
+            self.text = f"{self.name} одержал победу над {monster.name}!"
+            if len(self.loot_deck.cards) != 0:
+                self.hand.append(self.loot_deck.draw())
+            else:
+                pass
         else:
-            self.text = f"{self.name} has lost the fight against {monster.name}."
+            self.text = f"{self.name} не смог одолеть {monster.name}."
 
     def battle(self):
         monster = self.monster_deck.draw()
         return monster.name, monster.level, monster
 
     def use_card(self, index):
-        card = self.hand[index]
-        card.use(self)
-        self.inv.append(card)
-        self.hand.remove(card)
-        return self.inv, self.hand
+        if len(self.hand) != 0:
+            card = self.hand[index]
+            card.use(self)
+            self.inv.append(card)
+            self.hand.remove(card)
+            return self.inv, self.hand
+        else:
+            pass
